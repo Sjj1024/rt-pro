@@ -1,10 +1,19 @@
-import { useState } from 'react'
-import { Button, Form, Input, Space, Table, Tag } from 'antd'
+import {
+    Button,
+    Form,
+    Input,
+    Space,
+    Table,
+    Tag,
+    DatePicker,
+    Select,
+} from 'antd'
 import type { ColumnsType } from 'antd/es/table'
+import type { DatePickerProps, RangePickerProps } from 'antd/es/date-picker'
 
 import './index.scss'
 
-type LayoutType = Parameters<typeof Form>[0]['layout']
+const { RangePicker } = DatePicker
 
 interface DataType {
     key: string
@@ -15,7 +24,7 @@ interface DataType {
 
 const columns: ColumnsType<DataType> = [
     {
-        title: '开始时间',
+        title: '日志时间',
         dataIndex: 'name',
         key: 'name',
         render: (text) => <a>{text}</a>,
@@ -27,8 +36,8 @@ const columns: ColumnsType<DataType> = [
         render: (_, { tags }) => (
             <>
                 {tags.map((tag) => {
-                    let color = tag.length > 5 ? 'geekblue' : 'green'
-                    if (tag === 'loser') {
+                    let color = tag === '开发' ? 'geekblue' : 'green'
+                    if (tag === '测试') {
                         color = 'volcano'
                     }
                     return (
@@ -41,7 +50,7 @@ const columns: ColumnsType<DataType> = [
         ),
     },
     {
-        title: '日志',
+        title: '日志内容',
         dataIndex: 'address',
         key: 'address',
     },
@@ -60,29 +69,49 @@ const columns: ColumnsType<DataType> = [
 const data: DataType[] = [
     {
         key: '1',
-        name: 'John Brown',
+        name: '2021-08-01',
         address: 'New York No. 1 Lake Park',
         tags: ['普通', '开发'],
     },
     {
         key: '2',
-        name: 'Jim Green',
+        name: '2021-09-01',
         address: 'London No. 1 Lake Park',
         tags: ['丢失'],
     },
     {
         key: '3',
-        name: 'Joe Black',
+        name: '2021-10-01',
         address: 'Sydney No. 1 Lake Park',
         tags: ['生产', '测试'],
     },
 ]
 
+const onChange = (
+    value: DatePickerProps['value'] | RangePickerProps['value'],
+    dateString: [string, string] | string
+) => {
+    console.log('Selected Time: ', value)
+    console.log('Formatted Selected Time: ', dateString)
+}
+
+const onOk = (value: DatePickerProps['value'] | RangePickerProps['value']) => {
+    console.log('onOk: ', value)
+}
+
+const onFinish = (values: any) => {
+    console.log('Success:', values)
+}
+
+const onFinishFailed = (errorInfo: any) => {
+    console.log('Failed:', errorInfo)
+}
+
 export default function Board() {
     const [form] = Form.useForm()
-    const [formLayout, setFormLayout] = useState<LayoutType>('inline')
-    const onFormLayoutChange = ({ layout }: { layout: LayoutType }) => {
-        setFormLayout(layout)
+
+    const onReset = () => {
+        form.resetFields()
     }
 
     return (
@@ -90,24 +119,47 @@ export default function Board() {
             <div className="board-logo">RT日志监控页面</div>
             <div className="board-search">
                 <Form
-                    layout={formLayout}
+                    layout="inline"
                     form={form}
-                    initialValues={{
-                        layout: formLayout,
-                    }}
-                    onValuesChange={onFormLayoutChange}
+                    initialValues={{ layout: 'inline' }}
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
                 >
-                    <Form.Item label="时间">
-                        <Input placeholder="筛选时间范围" />
+                    <Form.Item label="搜索内容" name="keyWord">
+                        <Input placeholder="请输入搜索词" />
                     </Form.Item>
-                    <Form.Item label="类型">
-                        <Input placeholder="筛选类型" />
+                    <Form.Item label="日志类型" name="logType">
+                        <Select
+                            defaultValue=""
+                            style={{ width: 120 }}
+                            options={[
+                                { value: 'jack', label: '生产' },
+                                { value: 'lucy', label: '开发' },
+                                { value: 'Yiminghe', label: '错误' },
+                                {
+                                    value: 'disabled',
+                                    label: '严重',
+                                },
+                            ]}
+                        />
+                    </Form.Item>
+                    <Form.Item label="时间范围" name="timeRange">
+                        <RangePicker
+                            showTime={{ format: 'HH:mm' }}
+                            format="YYYY-MM-DD HH:mm"
+                            onChange={onChange}
+                            onOk={onOk}
+                        />
                     </Form.Item>
                     <Form.Item>
-                        <Button>重置</Button>
+                        <Button htmlType="button" onClick={onReset}>
+                            重置
+                        </Button>
                     </Form.Item>
                     <Form.Item>
-                        <Button type="primary">搜索</Button>
+                        <Button type="primary" htmlType="submit">
+                            搜索
+                        </Button>
                     </Form.Item>
                 </Form>
             </div>

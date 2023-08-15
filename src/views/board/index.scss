@@ -8,10 +8,14 @@
         margin-bottom: 10px;
         color: white;
         font-size: 30px;
+        font-weight: 600;
     }
 
     .board-search {
         padding: 10px 20px;
+        .ant-picker-input {
+            width: 114px;
+        }
     }
 
     .board-list {
