@@ -9,8 +9,6 @@ import {
     Select,
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import type { DatePickerProps, RangePickerProps } from 'antd/es/date-picker'
-
 import './index.scss'
 
 const { RangePicker } = DatePicker
@@ -24,13 +22,13 @@ interface DataType {
 
 const columns: ColumnsType<DataType> = [
     {
-        title: '日志时间',
+        title: '时间',
         dataIndex: 'name',
         key: 'name',
         render: (text) => <a>{text}</a>,
     },
     {
-        title: '日志类型',
+        title: '类型',
         key: 'tags',
         dataIndex: 'tags',
         render: (_, { tags }) => (
@@ -50,7 +48,7 @@ const columns: ColumnsType<DataType> = [
         ),
     },
     {
-        title: '日志内容',
+        title: '内容',
         dataIndex: 'address',
         key: 'address',
     },
@@ -87,18 +85,6 @@ const data: DataType[] = [
     },
 ]
 
-const onChange = (
-    value: DatePickerProps['value'] | RangePickerProps['value'],
-    dateString: [string, string] | string
-) => {
-    console.log('Selected Time: ', value)
-    console.log('Formatted Selected Time: ', dateString)
-}
-
-const onOk = (value: DatePickerProps['value'] | RangePickerProps['value']) => {
-    console.log('onOk: ', value)
-}
-
 const onFinish = (values: any) => {
     console.log('Success:', values)
 }
@@ -128,9 +114,8 @@ export default function Board() {
                     <Form.Item label="搜索内容" name="keyWord">
                         <Input placeholder="请输入搜索词" />
                     </Form.Item>
-                    <Form.Item label="日志类型" name="logType">
+                    <Form.Item label="筛选类型" name="logType">
                         <Select
-                            defaultValue=""
                             style={{ width: 120 }}
                             options={[
                                 { value: 'jack', label: '生产' },
@@ -147,8 +132,6 @@ export default function Board() {
                         <RangePicker
                             showTime={{ format: 'HH:mm' }}
                             format="YYYY-MM-DD HH:mm"
-                            onChange={onChange}
-                            onOk={onOk}
                         />
                     </Form.Item>
                     <Form.Item>
