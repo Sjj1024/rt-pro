@@ -25,8 +25,7 @@
     }
 
     .content-pre {
-        display: block;
-        max-width: 900px;
+        // max-width: 900px;
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
@@ -36,3 +35,18 @@
 .ant-tooltip-placement-bottom {
     max-width: 900px;
 }
+
+.upload-btn {
+    color: white;
+    background-color: #67c23a;
+    border-color: #67c23a;
+    &:hover {
+        color: white !important;
+        background-color: #95d475;
+        border-color: #95d475 !important;
+    }
+}
+
+// .ant-upload-list {
+//     display: none;
+// }
