@@ -11,6 +11,7 @@ export default defineConfig({
         },
     },
     server: {
+        // 配置自己电脑打开的地址
         host: '0.0.0.0',
         proxy: {
             '/log': {

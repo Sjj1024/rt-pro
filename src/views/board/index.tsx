@@ -173,7 +173,7 @@ export default function Board() {
           onFinish={onSearch}
         >
           <Form.Item label="搜索内容" name="content">
-            <Input placeholder="请输入搜索词" />
+            <Input placeholder="请输入搜索词" allowClear />
           </Form.Item>
           <Form.Item label="筛选类型" name="type">
             <Select
