@@ -13,6 +13,8 @@
 
     .board-search {
         padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
         .ant-picker-input {
             width: 114px;
         }
@@ -21,4 +23,16 @@
     .board-list {
         padding: 10px 20px;
     }
+
+    .content-pre {
+        display: block;
+        max-width: 900px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+}
+
+.ant-tooltip-placement-bottom {
+    max-width: 900px;
 }
