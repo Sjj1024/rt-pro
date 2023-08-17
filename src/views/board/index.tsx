@@ -64,12 +64,12 @@ export default function Board() {
             key: 'content',
             render: (_, { content }) => (
                 <div>
-                    <span
+                    <a
                         className="content-pre"
                         onClick={() => showContent(content)}
                     >
                         {content}
-                    </span>
+                    </a>
                 </div>
             ),
         },
