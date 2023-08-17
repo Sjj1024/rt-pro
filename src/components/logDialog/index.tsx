@@ -1,9 +1,9 @@
 import { Button, Modal } from 'antd'
 
 export default function LogDialog(props: any) {
-    const { visible, closeDialog, content } = props
+    const { visible, closeDialog, record } = props
     return (
-        <div>
+        <>
             <Modal
                 title="日志详情"
                 centered
@@ -12,13 +12,13 @@ export default function LogDialog(props: any) {
                 onOk={closeDialog}
                 onCancel={closeDialog}
                 footer={[
-                    <Button type="primary" onClick={closeDialog}>
+                    <Button type="primary" key="modalKey" onClick={closeDialog}>
                         确定
                     </Button>,
                 ]}
             >
-                <p className="dialog-log">{content}</p>
+                <p className="dialog-log">{record.content}</p>
             </Modal>
-        </div>
+        </>
     )
 }
