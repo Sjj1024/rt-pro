@@ -1,5 +1,5 @@
 import LogDialog from '@/components/logDialog'
-import { UploadOutlined } from '@ant-design/icons'
+import { SearchOutlined, UploadOutlined } from '@ant-design/icons'
 import {
   Button,
   Form,
@@ -79,23 +79,28 @@ export default function Board() {
 
   const [data, setData] = useState<DataType[]>([])
 
-  const onFinish = (values: any) => {
+  // 搜索loading
+  const [loading, setLoading] = useState(false)
+
+  // 点击搜索按钮
+  const onSearch = (values: any) => {
     console.log('Success:', values)
-    const start = values.timeRange[0]
-    const end = values.timeRange[1]
+    setLoading(true)
+    const start = values.timeRange ? values.timeRange[0] : 0
+    const end = values.timeRange ? values.timeRange[1] : 0
     const queryParams = {
-      logStartTime: `${start.$y}-${start.$M + 1}-${start.$D} ${start.$H
-        }:${start.$m}`,
-      logEndTime: `${end.$y}-${end.$M + 1}-${end.$D} ${end.$H}:${end.$m}`,
-      type: values.type,
-      content: values.content,
+      logStartTime: start ? `${start.$y}-${start.$M + 1}-${start.$D} ${start.$H
+        }:${start.$m}` : "",
+      logEndTime: end ? `${end.$y}-${end.$M + 1}-${end.$D} ${end.$H}:${end.$m}` : "",
+      type: values.type || "",
+      content: values.content || "",
+      pageSize: 20,
+      pageNum: 1
     }
     console.log('queryParams', queryParams)
+    getLogs(queryParams)
   }
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo)
-  }
 
   const onReset = () => {
     form.resetFields()
@@ -105,7 +110,8 @@ export default function Board() {
     name: 'file',
     async onChange(file) {
       const postForm = new FormData()
-      postForm.append('file', file as any)
+      console.log("file---", file.file);
+      postForm.append('file', file.file as any)
       const res = await LogApi.uploadLog(postForm)
       console.log('info-', file, postForm, res)
     },
@@ -115,33 +121,39 @@ export default function Board() {
   }
 
   // 初始化日志信息
-  const getLogs = async () => {
+  const getLogs = async (query?: any, page?: number | null, pageSize?: number | null) => {
     // 请求日志数据
-    const queryParams = {
+    const queryParams = query || {
       logStartTime: '',
       logEndTime: '',
       type: '',
       content: '',
+      pageNum: page || 1,
+      pageSize: pageSize || 20
     }
     const data = await LogApi.queryLog(queryParams)
-    const dataList = data.data.reduce((pre: any, cur: any) => {
+    const dataList = data.data.list.reduce((pre: any, cur: any) => {
       cur['key'] = cur.id
       pre.push(cur)
       return pre
     }, [])
     setData(dataList)
+    setTotal(data.data.total)
+    setLoading(false)
     console.log('getLogs---', data, dataList)
   }
 
   const pageHandle = (page: any, pageSize: any) => {
     console.log("页码变化", page, pageSize);
+    getLogs(null, page, pageSize)
   }
 
   // 分页查询
+  const [total, setTotal] = useState(0)
   const pageSet = {
     defaultCurrent: 1,
     defaultPageSize: 20,
-    total: 100,
+    total: total,
     pageSizeOptions: [20, 40, 60, 80, 100],
     onChange: pageHandle
   }
@@ -158,8 +170,7 @@ export default function Board() {
           layout="inline"
           form={form}
           initialValues={{ layout: 'inline' }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
+          onFinish={onSearch}
         >
           <Form.Item label="搜索内容" name="content">
             <Input placeholder="请输入搜索词" />
@@ -185,7 +196,7 @@ export default function Board() {
             </Button>
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" icon={<SearchOutlined />} loading={loading}>
               搜索
             </Button>
           </Form.Item>

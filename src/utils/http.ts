@@ -5,9 +5,9 @@ import axios from 'axios'
 const requests = axios.create({
     //配置对象
     //基础路径，requests发出的请求在端口号后面会跟改baseURl
-    baseURL: 'https://api.github.com',
+    baseURL: `${window.location.origin}`,
     //代表请求超时的时间5s
-    timeout: 5000,
+    timeout: 50000,
 })
 //请求拦截器，在请求发出之前做些事情
 requests.interceptors.request.use((config) => {

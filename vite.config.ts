@@ -10,4 +10,14 @@ export default defineConfig({
             '@': path.resolve(__dirname, 'src'),
         },
     },
+    server: {
+        host: '0.0.0.0',
+        proxy: {
+            '/log': {
+                target: 'http://172.20.10.3:8091',
+                ws: false,
+                changeOrigin: true,
+            },
+        },
+    },
 })
